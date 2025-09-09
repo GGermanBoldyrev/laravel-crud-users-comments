@@ -14,10 +14,11 @@ class PostSeeder extends Seeder
      */
     public function run(): void
     {
-        User::all()->each(function (User $user) {
-            Post::factory(rand(1, 3))->create([
-                'user_id' => $user->id,
-            ]);
-        });
+        $users = User::all();
+
+        Post::factory()
+            ->count(25)
+            ->recycle($users)
+            ->create();
     }
 }
