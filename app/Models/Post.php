@@ -13,13 +13,12 @@ class Post extends Model
 
     protected $fillable = ['user_id', 'status', 'body'];
 
-    protected function status(): Attribute
-    {
-        return Attribute::make(
-            get: fn (string $value) => PostStatus::from($value),
-            set: fn (PostStatus|string $value) => $value instanceof PostStatus ? $value->value : $value
-        );
-    }
+    protected $casts = [
+        'status' => PostStatus::class,
+    ];
+    protected $attributes = [
+        'status' => PostStatus::ACTIVE->value,
+    ];
 
     public function user()
     {
