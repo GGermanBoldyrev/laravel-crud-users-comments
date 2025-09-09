@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Post;
 
 use App\Enums\PostStatus;
 use Illuminate\Foundation\Http\FormRequest;

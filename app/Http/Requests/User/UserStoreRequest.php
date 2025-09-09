@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CommentUpdateRequest extends FormRequest
+class UserStoreRequest extends FormRequest
 {
     public function rules(): array
     {
         return [
-            'body' => ['sometimes','string'],
+            'name' => ['required','string','max:255'],
         ];
     }
 }
