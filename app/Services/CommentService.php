@@ -5,10 +5,11 @@ namespace App\Services;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Services\Contracts\CommentServiceInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class CommentService implements CommentServiceInterface
 {
-    public function paginate(array $filters = [], int $perPage = 15): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         $q = Comment::query()->with(['user'])->withCount('replies')->latest();
 
@@ -39,6 +40,47 @@ class CommentService implements CommentServiceInterface
     public function delete(Comment $comment): void
     {
         $comment->delete();
+    }
+
+    public function getUserCommentsToActivePosts(int $userId, int $perPage = 15): LengthAwarePaginator
+    {
+        return Comment::query()
+            ->byUser($userId)
+            ->toActivePosts()
+            ->with('user')
+            ->withCount('replies')
+            ->latest()
+            ->paginate($perPage);
+    }
+
+    public function getCreatedByCurrentUser(int $perPage = 15): LengthAwarePaginator
+    {
+        return Comment::query()
+            ->byUser((int)auth()->id())
+            ->with('user')
+            ->withCount('replies')
+            ->latest()
+            ->paginate($perPage);
+    }
+
+    public function getByPost(int $postId, int $perPage = 15): LengthAwarePaginator
+    {
+        return Comment::query()
+            ->toPost($postId)
+            ->with('user')
+            ->withCount('replies')
+            ->latest()
+            ->paginate($perPage);
+    }
+
+    public function getReplies(int $commentId, int $perPage = 15): LengthAwarePaginator
+    {
+        return Comment::query()
+            ->repliesTo($commentId)
+            ->with('user')
+            ->withCount('replies')
+            ->latest()
+            ->paginate($perPage);
     }
 
     private function mapType(string $input): string

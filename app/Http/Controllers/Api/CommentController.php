@@ -46,4 +46,28 @@ class CommentController extends Controller
         $this->service->delete($comment);
         return response()->noContent();
     }
+
+    public function userToActivePosts(int $userId): ResourceCollection
+    {
+        $comments = $this->service->getUserCommentsToActivePosts($userId, request('per_page', 15));
+        return CommentResource::collection($comments);
+    }
+
+    public function mine(): ResourceCollection
+    {
+        $comments = $this->service->getCreatedByCurrentUser(request('per_page', 15));
+        return CommentResource::collection($comments);
+    }
+
+    public function byPost(int $postId): ResourceCollection
+    {
+        $comments = $this->service->getByPost($postId, request('per_page', 15));
+        return CommentResource::collection($comments);
+    }
+
+    public function replies(int $commentId): ResourceCollection
+    {
+        $comments = $this->service->getReplies($commentId, request('per_page', 15));
+        return CommentResource::collection($comments);
+    }
 }
