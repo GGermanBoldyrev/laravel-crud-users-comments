@@ -5,10 +5,11 @@ namespace App\Services;
 use App\Enums\PostStatus;
 use App\Models\Post;
 use App\Services\Contracts\PostServiceInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class PostService implements PostServiceInterface
 {
-    public function paginate(array $filters = [], int $perPage = 15): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         $q = Post::query()->with('user')->withCount('comments')->latest();
 
@@ -38,5 +39,26 @@ class PostService implements PostServiceInterface
     public function delete(Post $post): void
     {
         $post->delete();
+    }
+
+    public function getActiveByUser(int $userId, int $perPage = 15): LengthAwarePaginator
+    {
+        return Post::query()
+            ->active()
+            ->byUser($userId)
+            ->with('user')
+            ->withCount('comments')
+            ->latest()
+            ->paginate($perPage);
+    }
+
+    public function getCreatedByCurrentUser(int $perPage = 15): LengthAwarePaginator
+    {
+        return Post::query()
+            ->byUser((int)auth()->id())
+            ->with('user')
+            ->withCount('comments')
+            ->latest()
+            ->paginate($perPage);
     }
 }

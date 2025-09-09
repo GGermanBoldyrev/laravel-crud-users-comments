@@ -46,4 +46,16 @@ class PostController extends Controller
         $this->service->delete($post);
         return response()->noContent();
     }
+
+    public function userActive(int $userId): ResourceCollection
+    {
+        $posts = $this->service->getActiveByUser($userId, request('per_page', 15));
+        return PostResource::collection($posts);
+    }
+
+    public function mine(): ResourceCollection | int
+    {
+        $posts = $this->service->getCreatedByCurrentUser(request('per_page', 15));
+        return PostResource::collection($posts);
+    }
 }
