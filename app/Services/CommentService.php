@@ -25,7 +25,6 @@ class CommentService implements CommentServiceInterface
         return Comment::create([
                 'user_id' => $data['user_id'] ?? null,
                 'body' => $data['body'],
-            ] + [
                 'commentable_type' => $this->mapType($data['commentable_type']),
                 'commentable_id' => (int)$data['commentable_id'],
             ]);
