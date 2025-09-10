@@ -40,8 +40,6 @@ class PostController extends Controller
 
     public function update(PostUpdateRequest $request, Post $post): PostResource
     {
-        $this->authorize('update', $post);
-
         $post = $this->service->update($post, $request->validated());
         $post->loadCount('comments')->load('user');
 
@@ -50,8 +48,6 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        $this->authorize('delete', $post);
-
         $this->service->delete($post);
         return response()->noContent();
     }

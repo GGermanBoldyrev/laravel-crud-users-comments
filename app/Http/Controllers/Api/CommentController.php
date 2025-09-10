@@ -40,8 +40,6 @@ class CommentController extends Controller
 
     public function update(CommentUpdateRequest $request, Comment $comment): CommentResource
     {
-        $this->authorize('update', $comment);
-
         $comment = $this->service->update($comment, $request->validated());
         $comment->load(['user'])->loadCount('replies');
 
@@ -50,8 +48,6 @@ class CommentController extends Controller
 
     public function destroy(Comment $comment)
     {
-        $this->authorize('delete', $comment);
-
         $this->service->delete($comment);
         return response()->noContent();
     }
