@@ -11,7 +11,6 @@ class PostStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required','integer','exists:users,id'],
             'status'  => ['sometimes', new Enum(PostStatus::class)],
             'body'    => ['required','string'],
         ];

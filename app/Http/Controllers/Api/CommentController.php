@@ -23,8 +23,12 @@ class CommentController extends Controller
 
     public function store(CommentStoreRequest $request): CommentResource
     {
-        $comment = $this->service->create($request->validated());
+        $data = $request->validated();
+        $data['user_id'] = $request->user()->id;
+
+        $comment = $this->service->create($data);
         $comment->load(['user'])->loadCount('replies');
+
         return new CommentResource($comment);
     }
 
@@ -36,13 +40,18 @@ class CommentController extends Controller
 
     public function update(CommentUpdateRequest $request, Comment $comment): CommentResource
     {
+        $this->authorize('update', $comment);
+
         $comment = $this->service->update($comment, $request->validated());
         $comment->load(['user'])->loadCount('replies');
+
         return new CommentResource($comment);
     }
 
     public function destroy(Comment $comment)
     {
+        $this->authorize('delete', $comment);
+
         $this->service->delete($comment);
         return response()->noContent();
     }

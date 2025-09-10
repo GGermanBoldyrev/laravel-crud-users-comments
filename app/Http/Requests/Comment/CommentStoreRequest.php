@@ -23,7 +23,6 @@ class CommentStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['nullable', 'integer', 'exists:users,id'],
             'body' => ['required', 'string'],
             'commentable_type' => ['required', 'string', $this->poly],
             'commentable_id' => ['required', 'integer'],
