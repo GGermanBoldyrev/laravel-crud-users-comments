@@ -6,54 +6,49 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
-use App\Models\User;
+use App\Services\Contracts\AuthServiceInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Response;
 
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request)
-    {
-        $data = $request->validated();
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+    public function __construct(private readonly AuthServiceInterface $authService) {}
 
-        $token = $user->createToken('api')->plainTextToken;
+    public function register(RegisterRequest $request): JsonResponse
+    {
+        $result = $this->authService->register($request->validated());
 
         return response()->json([
-            'user' => new UserResource($user),
-            'token' => $token,
+            'user' => new UserResource($result['user']),
+            'token' => $result['token'],
         ], 201);
     }
 
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
-        $data = $request->validated();
-        $user = User::where('email', $data['email'])->first();
+        $result = $this->authService->login($request->validated());
 
-        if (!$user || !Hash::check($data['password'], $user->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 422);
+        if (!$result) {
+            return response()->json([
+                'message' => 'Invalid credentials'
+            ], 422);
         }
 
-        $token = $user->createToken('api')->plainTextToken;
-
         return response()->json([
-            'user' => new UserResource($user),
-            'token' => $token,
+            'user' => new UserResource($result['user']),
+            'token' => $result['token'],
         ]);
     }
 
-    public function me(Request $request)
+    public function me(Request $request): UserResource
     {
         return new UserResource($request->user());
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): Response
     {
-        $request->user()->currentAccessToken()?->delete();
+        $this->authService->logout($request->user());
         return response()->noContent();
     }
 }

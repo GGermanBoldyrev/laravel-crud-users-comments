@@ -8,10 +8,13 @@ use App\Http\Requests\Comment\CommentUpdateRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Services\Contracts\CommentServiceInterface;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class CommentController extends Controller
 {
+    use AuthorizesRequests;
+
     public function __construct(private readonly CommentServiceInterface $service) {}
 
     public function index(): ResourceCollection
@@ -40,6 +43,8 @@ class CommentController extends Controller
 
     public function update(CommentUpdateRequest $request, Comment $comment): CommentResource
     {
+        $this->authorize('update', $comment);
+
         $comment = $this->service->update($comment, $request->validated());
         $comment->load(['user'])->loadCount('replies');
 
@@ -48,6 +53,8 @@ class CommentController extends Controller
 
     public function destroy(Comment $comment)
     {
+        $this->authorize('delete', $comment);
+
         $this->service->delete($comment);
         return response()->noContent();
     }

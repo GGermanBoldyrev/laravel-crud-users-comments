@@ -8,10 +8,13 @@ use App\Http\Requests\Post\PostUpdateRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Services\Contracts\PostServiceInterface;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class PostController extends Controller
 {
+    use AuthorizesRequests;
+
     public function __construct(private readonly PostServiceInterface $service) {}
 
     public function index(): ResourceCollection
@@ -40,14 +43,18 @@ class PostController extends Controller
 
     public function update(PostUpdateRequest $request, Post $post): PostResource
     {
+        $this->authorize('update', $post);
+
         $post = $this->service->update($post, $request->validated());
         $post->loadCount('comments')->load('user');
 
         return new PostResource($post);
     }
 
-    public function destroy(Post $post)
+    public function destroy(PostUpdateRequest $request, Post $post)
     {
+        $this->authorize('delete', $post);
+
         $this->service->delete($post);
         return response()->noContent();
     }

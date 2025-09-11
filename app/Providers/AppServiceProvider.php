@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Services\AuthService;
 use App\Services\CommentService;
+use App\Services\Contracts\AuthServiceInterface;
 use App\Services\Contracts\CommentServiceInterface;
 use App\Services\Contracts\PostServiceInterface;
 use App\Services\Contracts\UserServiceInterface;
@@ -20,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserServiceInterface::class, UserService::class);
         $this->app->bind(PostServiceInterface::class, PostService::class);
         $this->app->bind(CommentServiceInterface::class, CommentService::class);
+        $this->app->bind(AuthServiceInterface::class, AuthService::class);
     }
 
     /**
