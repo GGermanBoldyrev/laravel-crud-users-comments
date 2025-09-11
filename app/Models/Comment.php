@@ -7,6 +7,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * @OA\Schema(
+ *     schema="Comment",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="body", type="string", example="Текст комментария"),
+ *     @OA\Property(property="author", ref="#/components/schemas/User"),
+ *     @OA\Property(
+ *         property="commentable",
+ *         type="object",
+ *         @OA\Property(property="type", type="string", example="Post"),
+ *         @OA\Property(property="id", type="integer", example=1)
+ *     ),
+ *     @OA\Property(property="replies_count", type="integer", example=3),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
+ * )
+ */
+
 class Comment extends Model
 {
     use HasFactory;

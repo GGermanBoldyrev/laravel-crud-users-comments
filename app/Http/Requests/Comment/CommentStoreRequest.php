@@ -7,6 +7,16 @@ use App\Models\Post;
 use App\Rules\PolymorphicExists;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @OA\Schema(
+ *     schema="CommentStoreRequest",
+ *     type="object",
+ *     required={"body", "commentable_type", "commentable_id"},
+ *     @OA\Property(property="body", type="string", example="Текст комментария"),
+ *     @OA\Property(property="commentable_type", type="string", example="App\\Models\\Post"),
+ *     @OA\Property(property="commentable_id", type="integer", example=1)
+ * )
+ */
 class CommentStoreRequest extends FormRequest
 {
     private PolymorphicExists $poly;

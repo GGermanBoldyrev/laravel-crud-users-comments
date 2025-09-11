@@ -8,6 +8,21 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @OA\Schema(
+ *     schema="Post",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="status", type="string", enum={"active", "inactive"}, example="active"),
+ *     @OA\Property(property="is_active", type="boolean", example=true),
+ *     @OA\Property(property="body", type="string", example="Содержимое поста"),
+ *     @OA\Property(property="author", ref="#/components/schemas/User"),
+ *     @OA\Property(property="comments_count", type="integer", example=5),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
+ * )
+ */
+
 class Post extends Model
 {
     use HasFactory;
