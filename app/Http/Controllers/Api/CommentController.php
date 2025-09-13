@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\DTO\Comment\CommentCreateDto;
 use App\DTO\Comment\CommentFilterDto;
+use App\DTO\Comment\CommentUpdateDto;
 use App\DTO\Common\PageParams;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Comment\CommentStoreRequest;
@@ -96,10 +98,9 @@ class CommentController extends Controller
      */
     public function store(CommentStoreRequest $request): CommentResource
     {
-        $data = $request->validated();
-        $data['user_id'] = $request->user()->id;
+        $dto = CommentCreateDto::fromRequest($request);
+        $comment = $this->service->create($dto);
 
-        $comment = $this->service->create($data);
         $comment->load(['user'])->loadCount('replies');
 
         return new CommentResource($comment);
@@ -171,7 +172,7 @@ class CommentController extends Controller
     {
         $this->authorize('update', $comment);
 
-        $comment = $this->service->update($comment, $request->validated());
+        $comment = $this->service->update($comment, CommentUpdateDto::fromRequest($request));
         $comment->load(['user'])->loadCount('replies');
 
         return new CommentResource($comment);

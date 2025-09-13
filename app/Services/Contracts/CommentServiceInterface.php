@@ -2,7 +2,9 @@
 
 namespace App\Services\Contracts;
 
+use App\DTO\Comment\CommentCreateDto;
 use App\DTO\Comment\CommentFilterDto;
+use App\DTO\Comment\CommentUpdateDto;
 use App\DTO\Common\PageParams;
 use App\Models\Comment;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -13,9 +15,9 @@ interface CommentServiceInterface
     // CRUD
     public function paginate(CommentFilterDto $dto, PageParams $params): LengthAwarePaginator;
 
-    public function create(array $data): Comment;
+    public function create(CommentCreateDto $dto): Comment;
 
-    public function update(Comment $comment, array $data): Comment;
+    public function update(Comment $comment, CommentUpdateDto $dto): Comment;
 
     public function delete(Comment $comment): void;
 

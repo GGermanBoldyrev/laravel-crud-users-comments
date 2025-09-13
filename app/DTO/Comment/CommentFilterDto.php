@@ -2,6 +2,7 @@
 
 namespace App\DTO\Comment;
 
+use App\Mapper\CommentableTypeMapper;
 use Illuminate\Http\Request;
 
 final readonly class CommentFilterDto
@@ -22,15 +23,9 @@ final readonly class CommentFilterDto
         );
     }
 
-    public function eloquentType(): ?string
+    public function eloquentType(): string
     {
-        if ($this->commentableType === null) return null;
-
-        return match ($this->commentableType) {
-            'post' => \App\Models\Post::class,
-            'comment' => \App\Models\Comment::class,
-            default => $this->commentableType,
-        };
+        return CommentableTypeMapper::toModel($this->commentableType);
     }
 
     public function hasScope(): bool

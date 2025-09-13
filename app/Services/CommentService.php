@@ -2,11 +2,14 @@
 
 namespace App\Services;
 
+use App\DTO\Comment\CommentCreateDto;
 use App\DTO\Comment\CommentFilterDto;
+use App\DTO\Comment\CommentUpdateDto;
 use App\DTO\Common\PageParams;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Services\Contracts\CommentServiceInterface;
+use GuzzleHttp\Promise\Create;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class CommentService implements CommentServiceInterface
@@ -26,19 +29,19 @@ class CommentService implements CommentServiceInterface
         return $q->paginate($params->perPage, '[*]', 'page', $params->page);
     }
 
-    public function create(array $data): Comment
+    public function create(CommentCreateDto $dto): Comment
     {
         return Comment::create([
-                'user_id' => $data['user_id'] ?? null,
-                'body' => $data['body'],
-                'commentable_type' => $this->mapType($data['commentable_type']),
-                'commentable_id' => (int)$data['commentable_id'],
+                'user_id' => $dto->userId,
+                'body' => $dto->body,
+                'commentable_type' => $dto->eloquentType(),
+                'commentable_id' => $dto->commentableId,
             ]);
     }
 
-    public function update(Comment $comment, array $data): Comment
+    public function update(Comment $comment, CommentUpdateDto $dto): Comment
     {
-        $comment->fill($data)->save();
+        $comment->fill($dto->toEloquentUpdate())->save();
         return $comment->refresh();
     }
 
@@ -86,15 +89,5 @@ class CommentService implements CommentServiceInterface
             ->withCount('replies')
             ->latest()
             ->paginate($perPage);
-    }
-
-    private function mapType(string $input): string
-    {
-        $t = strtolower($input);
-        return match ($t) {
-            'post' => Post::class,
-            'comment' => Comment::class,
-            default => $input,
-        };
     }
 }
