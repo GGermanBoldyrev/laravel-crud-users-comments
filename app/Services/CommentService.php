@@ -61,33 +61,33 @@ class CommentService implements CommentServiceInterface
             ->paginate(...$params->toArgs());
     }
 
-    public function getCreatedByCurrentUser(int $perPage = 15): LengthAwarePaginator
+    public function getCreatedByCurrentUser(PageParams $params): LengthAwarePaginator
     {
         return Comment::query()
             ->byUser((int)auth()->id())
             ->with('user')
             ->withCount('replies')
             ->latest()
-            ->paginate($perPage);
+            ->paginate(...$params->toArgs());
     }
 
-    public function getByPost(int $postId, int $perPage = 15): LengthAwarePaginator
+    public function getByPost(int $postId, PageParams $params): LengthAwarePaginator
     {
         return Comment::query()
             ->toPost($postId)
             ->with('user')
             ->withCount('replies')
             ->latest()
-            ->paginate($perPage);
+            ->paginate(...$params->toArgs());
     }
 
-    public function getReplies(int $commentId, int $perPage = 15): LengthAwarePaginator
+    public function getReplies(int $commentId, PageParams $params): LengthAwarePaginator
     {
         return Comment::query()
             ->repliesTo($commentId)
             ->with('user')
             ->withCount('replies')
             ->latest()
-            ->paginate($perPage);
+            ->paginate(...$params->toArgs());
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\DTO\Common\PageParams;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserStoreRequest;
 use App\Http\Requests\User\UserUpdateRequest;
@@ -43,7 +44,9 @@ class UserController extends Controller
      */
     public function index(): ResourceCollection
     {
-        $users = $this->service->paginate(perPage: request('per_page', 15));
+        $page = PageParams::fromRequest(request(), 15, 100);
+
+        $users = $this->service->paginate($page);
         return UserResource::collection($users);
     }
 

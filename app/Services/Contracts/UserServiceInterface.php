@@ -2,14 +2,16 @@
 
 namespace App\Services\Contracts;
 
+use App\DTO\Common\PageParams;
+use App\DTO\User\UserCreateDto;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface UserServiceInterface
 {
-    public function paginate(int $perPage = 15): LengthAwarePaginator;
+    public function paginate(PageParams $params): LengthAwarePaginator;
 
-    public function create(array $data): User;
+    public function create(UserCreateDto $dto): User;
 
     public function update(User $user, array $data): User;
 

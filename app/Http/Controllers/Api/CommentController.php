@@ -279,7 +279,9 @@ class CommentController extends Controller
      */
     public function mine(): ResourceCollection
     {
-        $comments = $this->service->getCreatedByCurrentUser(request('per_page', 15));
+        $page = PageParams::fromRequest(request(), 15, 100);
+
+        $comments = $this->service->getCreatedByCurrentUser($page);
         return CommentResource::collection($comments);
     }
 
@@ -319,7 +321,9 @@ class CommentController extends Controller
      */
     public function byPost(int $postId): ResourceCollection
     {
-        $comments = $this->service->getByPost($postId, request('per_page', 15));
+        $page = PageParams::fromRequest(request(), 15, 100);
+
+        $comments = $this->service->getByPost($postId, $page);
         return CommentResource::collection($comments);
     }
 
@@ -359,7 +363,9 @@ class CommentController extends Controller
      */
     public function replies(int $commentId): ResourceCollection
     {
-        $comments = $this->service->getReplies($commentId, request('per_page', 15));
+        $page = PageParams::fromRequest(request(), 15, 100);
+
+        $comments = $this->service->getReplies($commentId, $page);
         return CommentResource::collection($comments);
     }
 }

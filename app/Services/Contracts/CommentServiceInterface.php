@@ -24,9 +24,9 @@ interface CommentServiceInterface
     // Бизнес запросы
     public function getUserCommentsToActivePosts(int $userId, PageParams $params): LengthAwarePaginator;
 
-    public function getCreatedByCurrentUser(int $perPage = 15): LengthAwarePaginator;
+    public function getCreatedByCurrentUser(PageParams $params): LengthAwarePaginator;
 
-    public function getByPost(int $postId, int $perPage = 15): LengthAwarePaginator;
+    public function getByPost(int $postId, PageParams $params): LengthAwarePaginator;
 
-    public function getReplies(int $commentId, int $perPage = 15): LengthAwarePaginator;
+    public function getReplies(int $commentId, PageParams $params): LengthAwarePaginator;
 }
