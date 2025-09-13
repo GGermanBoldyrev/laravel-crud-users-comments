@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Contracts;
+namespace App\Repositories\Contracts;
 
 use App\DTO\Common\PageParams;
 use App\DTO\Post\PostCreateDto;
@@ -8,7 +8,7 @@ use App\DTO\Post\PostUpdateDto;
 use App\Models\Post;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-interface PostServiceInterface
+interface PostRepositoryInterface
 {
     public function paginate(array $filters, PageParams $params): LengthAwarePaginator;
 
@@ -20,5 +20,5 @@ interface PostServiceInterface
 
     public function getActiveByUser(int $userId, PageParams $params): LengthAwarePaginator;
 
-    public function getCreatedByCurrentUser(PageParams $params): LengthAwarePaginator;
+    public function getByUser(int $userId, PageParams $params): LengthAwarePaginator;
 }

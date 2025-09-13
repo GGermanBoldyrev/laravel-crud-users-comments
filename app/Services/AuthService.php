@@ -5,6 +5,7 @@ namespace App\Services;
 use App\DTO\User\LoginDto;
 use App\DTO\User\RegisterUserDto;
 use App\Models\User;
+use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Services\Contracts\AuthServiceInterface;
 use App\Services\Traits\TokenManager;
 use Illuminate\Support\Facades\Hash;
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\Hash;
 class AuthService implements AuthServiceInterface
 {
     use TokenManager;
+
+    public function __construct(private readonly UserRepositoryInterface $userRepository) {}
 
     public function register(RegisterUserDto $dto): array
     {
@@ -31,7 +34,7 @@ class AuthService implements AuthServiceInterface
 
     public function login(LoginDto $dto): ?array
     {
-        $user = User::where('email', $dto->email)->first();
+        $user = $this->userRepository->findByEmail($dto->email);
 
         if (!$user || !Hash::check($dto->plainPassword, $user->password)) {
             return null;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\DTO\Common\PageParams;
 use App\DTO\Post\PostCreateDto;
 use App\DTO\Post\PostUpdateDto;
 use App\Http\Controllers\Controller;
@@ -63,7 +64,9 @@ class PostController extends Controller
     public function index(): ResourceCollection
     {
         $filters = request()->only(['status','user_id']);
-        $posts = $this->service->paginate($filters, request('per_page', 15));
+        $page = PageParams::fromRequest(request(), 15, 100);
+        
+        $posts = $this->service->paginate($filters, $page);
         return PostResource::collection($posts);
     }
 
@@ -236,7 +239,8 @@ class PostController extends Controller
      */
     public function userActive(int $userId): ResourceCollection
     {
-        $posts = $this->service->getActiveByUser($userId, request('per_page', 15));
+        $page = PageParams::fromRequest(request(), 15, 100);
+        $posts = $this->service->getActiveByUser($userId, $page);
         return PostResource::collection($posts);
     }
 
@@ -268,9 +272,10 @@ class PostController extends Controller
      *     )
      * )
      */
-    public function mine(): ResourceCollection | int
+    public function mine(): ResourceCollection
     {
-        $posts = $this->service->getCreatedByCurrentUser(request('per_page', 15));
+        $page = PageParams::fromRequest(request(), 15, 100);
+        $posts = $this->service->getCreatedByCurrentUser($page);
         return PostResource::collection($posts);
     }
 }
