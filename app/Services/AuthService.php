@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\DTO\User\LoginDto;
+use App\DTO\User\RegisterUserDto;
 use App\Models\User;
 use App\Services\Contracts\AuthServiceInterface;
 use App\Services\Traits\TokenManager;
@@ -11,12 +13,12 @@ class AuthService implements AuthServiceInterface
 {
     use TokenManager;
 
-    public function register(array $data): array
+    public function register(RegisterUserDto $dto): array
     {
         $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'name' => $dto->name,
+            'email' => $dto->email,
+            'password' => Hash::make($dto->plainPassword),
         ]);
 
         $token = $this->generateToken($user);
@@ -27,11 +29,11 @@ class AuthService implements AuthServiceInterface
         ];
     }
 
-    public function login(array $credentials): ?array
+    public function login(LoginDto $dto): ?array
     {
-        $user = User::where('email', $credentials['email'])->first();
+        $user = User::where('email', $dto->email)->first();
 
-        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+        if (!$user || !Hash::check($dto->plainPassword, $user->password)) {
             return null;
         }
 
