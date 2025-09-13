@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\DTO\Comment\CommentFilterDto;
+use App\DTO\Common\PageParams;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Comment\CommentStoreRequest;
 use App\Http\Requests\Comment\CommentUpdateRequest;
@@ -60,8 +62,11 @@ class CommentController extends Controller
      */
     public function index(): ResourceCollection
     {
-        $filters = request()->only(['commentable_type','commentable_id']);
-        $comments = $this->service->paginate($filters, request('per_page', 15));
+        $filter = CommentFilterDto::fromRequest(request());
+        $page = PageParams::fromRequest(request(), 15, 100);
+
+        $comments = $this->service->paginate($filter, $page);
+
         return CommentResource::collection($comments);
     }
 

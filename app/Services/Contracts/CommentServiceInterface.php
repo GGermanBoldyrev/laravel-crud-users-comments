@@ -2,6 +2,8 @@
 
 namespace App\Services\Contracts;
 
+use App\DTO\Comment\CommentFilterDto;
+use App\DTO\Common\PageParams;
 use App\Models\Comment;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -9,7 +11,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 interface CommentServiceInterface
 {
     // CRUD
-    public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator;
+    public function paginate(CommentFilterDto $dto, PageParams $params): LengthAwarePaginator;
 
     public function create(array $data): Comment;
 

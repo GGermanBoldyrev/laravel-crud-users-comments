@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\DTO\Comment\CommentFilterDto;
+use App\DTO\Common\PageParams;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Services\Contracts\CommentServiceInterface;
@@ -9,16 +11,19 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class CommentService implements CommentServiceInterface
 {
-    public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator
+    public function paginate(CommentFilterDto $dto, PageParams $params): LengthAwarePaginator
     {
-        $q = Comment::query()->with(['user'])->withCount('replies')->latest();
+        $q = Comment::query()
+            ->with(['user'])
+            ->withCount('replies')
+            ->latest();
 
-        if (isset($filters['commentable_type'], $filters['commentable_id'])) {
-            $q->where('commentable_type', $this->mapType($filters['commentable_type']))
-                ->where('commentable_id', (int)$filters['commentable_id']);
+        if ($dto->hasScope()) {
+            $q->where('commentable_type', $dto->eloquentType())
+              ->where('commentable_id', $dto->commentableId);
         }
 
-        return $q->paginate($perPage);
+        return $q->paginate($params->perPage, '[*]', 'page', $params->page);
     }
 
     public function create(array $data): Comment
