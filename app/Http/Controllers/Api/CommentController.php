@@ -243,7 +243,9 @@ class CommentController extends Controller
      */
     public function userToActivePosts(int $userId): ResourceCollection
     {
-        $comments = $this->service->getUserCommentsToActivePosts($userId, request('per_page', 15));
+        $page = PageParams::fromRequest(request(), 15, 100);
+
+        $comments = $this->service->getUserCommentsToActivePosts($userId, $page);
         return CommentResource::collection($comments);
     }
 

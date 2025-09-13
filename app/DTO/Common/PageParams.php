@@ -9,6 +9,8 @@ class PageParams
     public function __construct(
         public int $perPage,
         public int $page,
+        public array|string $columns = ['*'],
+        public string $pageName = 'page'
     ) {}
 
     public static function fromRequest(Request $request, int $defaultPerPage = 15, int $maxPerPage = 100): self
@@ -20,5 +22,10 @@ class PageParams
         $page = max(1, $page);
 
         return new self($perPage, $page);
+    }
+
+    public function toArgs(): array
+    {
+        return [$this->perPage, $this->columns, $this->pageName, $this->page];
     }
 }

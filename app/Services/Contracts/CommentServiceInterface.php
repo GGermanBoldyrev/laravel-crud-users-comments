@@ -22,7 +22,7 @@ interface CommentServiceInterface
     public function delete(Comment $comment): void;
 
     // Бизнес запросы
-    public function getUserCommentsToActivePosts(int $userId, int $perPage = 15): LengthAwarePaginator;
+    public function getUserCommentsToActivePosts(int $userId, PageParams $params): LengthAwarePaginator;
 
     public function getCreatedByCurrentUser(int $perPage = 15): LengthAwarePaginator;
 

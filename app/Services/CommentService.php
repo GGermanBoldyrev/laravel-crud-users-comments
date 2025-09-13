@@ -26,7 +26,7 @@ class CommentService implements CommentServiceInterface
               ->where('commentable_id', $dto->commentableId);
         }
 
-        return $q->paginate($params->perPage, '[*]', 'page', $params->page);
+        return $q->paginate(...$params->toArgs());
     }
 
     public function create(CommentCreateDto $dto): Comment
@@ -50,7 +50,7 @@ class CommentService implements CommentServiceInterface
         $comment->delete();
     }
 
-    public function getUserCommentsToActivePosts(int $userId, int $perPage = 15): LengthAwarePaginator
+    public function getUserCommentsToActivePosts(int $userId, PageParams $params): LengthAwarePaginator
     {
         return Comment::query()
             ->byUser($userId)
@@ -58,7 +58,7 @@ class CommentService implements CommentServiceInterface
             ->with('user')
             ->withCount('replies')
             ->latest()
-            ->paginate($perPage);
+            ->paginate(...$params->toArgs());
     }
 
     public function getCreatedByCurrentUser(int $perPage = 15): LengthAwarePaginator
