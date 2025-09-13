@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\DTO\Post\PostCreateDto;
+use App\DTO\Post\PostUpdateDto;
 use App\Enums\PostStatus;
 use App\Models\Post;
 use App\Services\Contracts\PostServiceInterface;
@@ -25,14 +27,14 @@ class PostService implements PostServiceInterface
         return $q->paginate($perPage);
     }
 
-    public function create(array $data): Post
+    public function create(PostCreateDto $dto): Post
     {
-        return Post::create($data);
+        return Post::create($dto->toEloquentCreate());
     }
 
-    public function update(Post $post, array $data): Post
+    public function update(Post $post, PostUpdateDto $dto): Post
     {
-        $post->fill($data)->save();
+        $post->fill($dto->toEloquentUpdate())->save();
         return $post->refresh();
     }
 

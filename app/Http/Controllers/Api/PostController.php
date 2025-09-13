@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\DTO\Post\PostCreateDto;
+use App\DTO\Post\PostUpdateDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\PostStoreRequest;
 use App\Http\Requests\Post\PostUpdateRequest;
@@ -91,10 +93,7 @@ class PostController extends Controller
      */
     public function store(PostStoreRequest $request): PostResource
     {
-        $data = $request->validated();
-        $data['user_id'] = $request->user()->id;
-
-        $post = $this->service->create($data);
+        $post = $this->service->create(PostCreateDto::fromRequest($request));
         $post->loadCount('comments')->load('user');
 
         return new PostResource($post);
@@ -166,7 +165,7 @@ class PostController extends Controller
     {
         $this->authorize('update', $post);
 
-        $post = $this->service->update($post, $request->validated());
+        $post = $this->service->update($post, PostUpdateDto::fromRequest($request));
         $post->loadCount('comments')->load('user');
 
         return new PostResource($post);

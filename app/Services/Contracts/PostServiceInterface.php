@@ -2,6 +2,8 @@
 
 namespace App\Services\Contracts;
 
+use App\DTO\Post\PostCreateDto;
+use App\DTO\Post\PostUpdateDto;
 use App\Models\Post;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -9,9 +11,9 @@ interface PostServiceInterface
 {
     public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator;
 
-    public function create(array $data): Post;
+    public function create(PostCreateDto $dto): Post;
 
-    public function update(Post $post, array $data): Post;
+    public function update(Post $post, PostUpdateDto $dto): Post;
 
     public function delete(Post $post): void;
 

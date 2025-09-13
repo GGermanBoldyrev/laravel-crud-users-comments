@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\DTO\Common\PageParams;
+use App\DTO\User\UserCreateDto;
+use App\DTO\User\UserUpdateDto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserStoreRequest;
 use App\Http\Requests\User\UserUpdateRequest;
@@ -76,7 +78,7 @@ class UserController extends Controller
      */
     public function store(UserStoreRequest $request): UserResource
     {
-        $user = $this->service->create($request->validated());
+        $user = $this->service->create(UserCreateDto::fromRequest($request));
         return new UserResource($user);
     }
 
@@ -142,7 +144,7 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user): UserResource
     {
-        $user = $this->service->update($user, $request->validated());
+        $user = $this->service->update($user, UserUpdateDto::fromRequest($request));
         return new UserResource($user);
     }
 
